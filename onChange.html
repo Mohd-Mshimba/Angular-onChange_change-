@@ -1,0 +1,85 @@
+ <!-- ngModelChange USING INPUT -->
+ <!-- when you type filter -->
+
+ <form [formGroup]="formDataFilter">
+  <mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Search By Reg #</mat-label>
+    <input matInput formControlName="sisRegNo" (ngModelChange)="filter($event)">
+  </mat-form-field>
+</form>
+
+filter(detail:any) {
+  this.studentEnrolementService.getByReg(detail).subscribe((data) => {
+    this.studentEnrolement = data;
+    this.dataSource = new MatTableDataSource(data);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.matSort;
+  }, (error: HttpErrorResponse) => {
+    // console.log("Data not Exist", error);
+  })
+}
+
+<!-- ********************************************************************** -->
+
+
+<!-- CHANGE USING INPUT -->
+
+<form [formGroup]="formDate">
+  <label>Filter by Date</label>
+  <input type="date" class="form-control" formControlName="attendenceDate" 
+  (change)="filter()"/>
+</form>
+
+
+filter(){
+  this.staffTeachearAttendanceService.filter(this.formDate.value.attendenceDate).subscribe((res) => {
+    this.staffTeachearAttendance = res;
+    this.dataSource = new MatTableDataSource(res);
+    this.dataSource.paginator = this.paginator;
+    console.log("ByDate: ",res)
+  });
+}
+
+
+ngOnInit(): void {
+  this.formDate = new FormGroup({
+    attendenceDate: new FormControl('', [Validators.required])
+  })
+}
+
+
+<!-- ********************************************************************** -->
+
+
+<!-- CHANGE USING SELECT INPUT -->
+
+<mat-form-field>
+  <label class="control-label">Search by Level</label> 
+  <mat-select class="form-control" formControlName="levelCode" (change)="filter()">
+    <mat-option value="">Select Level</mat-option>
+    <mat-option value="1">Pre-primary</mat-option>
+    <mat-option value="2">Primary</mat-option>
+    <mat-option value="3">Secondary</mat-option>
+  </mat-select>
+</mat-form-field>
+
+
+filter() {
+  this.studentEnrolementService.filter(this.formData.value).subscribe((res) => {
+    this.studentEnrolement = res;
+    this.dataSource = new MatTableDataSource(res);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  });
+}
+
+ngOnInit(): void {
+  this.createData();
+}
+
+createData() {
+  this.formData = new FormGroup({
+    levelCode: new FormControl('', [Validators.required])
+  });
+}
+<!-- ********************************************************************** -->
